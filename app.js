@@ -29,24 +29,29 @@ app.use('/users', usersRouter);
 
 app.get('/courses', courses.findAll);
 app.get('/courses/:id', courses.findOne);
-app.get('/courses/transform/:id', courses.transformOne);
+app.get('/courses/transformation/:id', courses.transformOne);
 
-app.post('/courses/create', courses.addCourse);
+app.post('/courses/new', courses.addCourse);
 //{"coursetype":"letter","userId":2000001,"length":10}
 
-//put -> change score
-//delete -> delete course
+app.put('/courses/:id',courses.updateScore);
+
+app.delete('/courses/:id', courses.deleteCourse);
 
 
 app.get('/users', users.findAll);
 app.get('/users/:id', users.findOne);
+app.get('/users/courselist/:id', users.courselist);
 app.get('/users/score/:id', users.fullScore);
-//get -> get course list
 
-app.post('/users/add', users.addUser);
+app.post('/users', users.addUser);
 //{"name":"Percival Graves"}
 
-//put -> change name
+app.put('/users/:id', users.updateName);
+
+app.delete('/users/:id', users.deleteUser);
+
+
 
 
 
