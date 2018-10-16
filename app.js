@@ -32,7 +32,7 @@ app.get('/courses/:id', courses.findOne);
 app.get('/courses/transformation/:id', courses.transformOne);
 
 app.post('/courses/new', courses.addCourse);
-//{"coursetype":"letter","userId":2000001,"length":10}
+//{"coursetype":"letter","userId":5bc5a43159b84881d340d2e0,"length":10}
 
 app.put('/courses/:id',courses.updateScore);
 

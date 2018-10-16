@@ -1,14 +1,34 @@
 var express = require('express');
-let users = require('../models/users');
-let courses = require('../models/courses');
+let User = require('../models/users');
+let Course = require('../models/courses');
 let morsecodes = require('../models/morsecodes');
 var router = express.Router();
+let mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/morsedb');
+
+let db = mongoose.connection;
+
+db.on('error', function (err) {
+    console.log('Unable to Connect to [ ' + db.name + ' ]', err);
+});
+
+db.once('open', function () {
+    console.log('Successfully Connected to [ ' + db.name + ' ]');
+});
+
 
 /* GET users listing. */
 router.findAll = (req, res) => {
     // Return a JSON representation of our list
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(users,null,5));
+
+    User.find(function(err, users) {
+        if (err)
+            res.send(err);
+
+        res.send(JSON.stringify(users,null,5));
+    });
 }
 
 router.deleteUser = (req, res) => {

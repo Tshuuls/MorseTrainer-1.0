@@ -1,8 +1,17 @@
+//let User = require('../models/users');
+let mongoose = require('mongoose');
+/*delete mongoose.connection.models['Course'];
+delete mongoose.connection.models['User'];*/
 
-const courses = [
-    {id: 1000000, coursetype: 'morse',userId:2000000, score:10, coursecontent:[3,12,14,4]},
-    {id: 1000001, coursetype: 'letter',userId:2000000, score:3, coursecontent:[23,19,20]},
-    {id: 1000002, coursetype: 'letter',userId:2000002, score:43, coursecontent:[3,16,5,23,10]}
-];
+let CourseSchema = new mongoose.Schema({
+        coursetype: String,
+        userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        score: {type: Number, default: 0},
+        coursecontent: Array
+    },
+    { collection: 'courses' });
 
-module.exports = courses;
+module.exports = mongoose.model('Course', CourseSchema);
+/*
+* db.courses.insert({"coursetype": "morse","userId":ObjectId("5bc5b4ae59b84881d340d2e6"), "score":20, "coursecontent":[4,24,16,12,11]})
+* */

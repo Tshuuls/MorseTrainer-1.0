@@ -1,14 +1,46 @@
-let courses = require('../models/courses');
-let users = require('../models/users');
+var Course = require('../models/courses');
+var User = require('../models/users');
 let morsecodes = require('../models/morsecodes');
 let express = require('express');
 let router = express.Router();
+let mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/morsedb');
+
+let db = mongoose.connection;
+
+db.on('error', function (err) {
+    console.log('Unable to Connect to [ ' + db.name + ' ]', err);
+});
+
+db.once('open', function () {
+    console.log('Successfully Connected to [ ' + db.name + ' ]');
+});
+
 
 router.findAll = (req, res) => {
     // Return a JSON representation of our list
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(courses,null,5));
+
+    Course.find(function(err, courses) {
+        if (err)
+            res.send(err);
+
+        res.send(JSON.stringify(courses, null, 5));
+    });
 }
+
+router.findOne=(req,res)=>{
+    res.setHeader('Content-Type', 'application/json');
+
+    Course.find({ "_id" : req.params.id },function(err, course) {
+        if (err)
+            res.send({message:"Course not Found",errmsg:err});
+        else
+            res.send(JSON.stringify(course,null,5));
+    });
+
+};
 
 router.deleteCourse = (req, res) => {
     // Return a JSON representation of our list
@@ -28,43 +60,37 @@ router.deleteCourse = (req, res) => {
     }
 }
 
-router.findOne=(req,res)=>{
-
-    res.setHeader('Content-Type', 'application/json');
-    var result=getByValue(courses,req.params.id);
-    if (result==null){
-        res.status(404).json({ error: 'Course not found' });
-        throw 'Course not found';
-    } else{
-        res.send(JSON.stringify(result,null,5));
-    }
-};
-
 router.updateScore=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
-    var course=getByValue(courses,req.params.id);
-    if (course==null){
-        res.status(404).json({ error: 'Course not found' });
-        throw 'Course not found';
-    }
-    var exception = !req.body.hasOwnProperty('score');
-    if (exception) {
-        res.status(404).json({ error: 'No Score parameter given, could not update score' });
-        throw 'No Score parameter given';
-    }
-    if(req.body.score==course.score){
-        res.status(404).json({ error: 'New Score same as old score, no update' });
-        throw 'New Score same as old score, no update';
-    }
-    var temp=course.score;
-    course.score=req.body.score;
-    if(temp!=course.score){
-        res.send(JSON.stringify("Score Updated",null,5));
-    }else{
-        res.status(404).json({ error: 'Score not Updated' });
-        throw 'Score not Updated';
-    }
+    Course.findById(req.params.id ,function(err, course) {
+        if (err)
+            res.send({message:"Course not Found",errmsg:err});
+        else{
+            var exception = !req.body.hasOwnProperty('score');
+            if (exception) {
+
+                res.send({message:"Score Not Updated - No Score parameter given",errmsg:err});
+            }
+            if(req.body.score==course.score){
+                res.send({message:"Score Not Updated - new score same as old score",errmsg:err});
+            }
+            var temp=course.score;
+            course.score=req.body.score;
+            course.save(function (err) {
+                if (err) {
+                    res.send({message:"Score Not Updated",errmsg:err});
+                }
+                else
+                res.send(JSON.stringify("Score Updated",null,5));
+            });
+
+
+
+        }
+
+    });
+
 };
 
 router.transformOne=(req,res)=>{
