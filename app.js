@@ -31,8 +31,8 @@ app.get('/courses', courses.findAll);
 app.get('/courses/:id', courses.findOne);
 app.get('/courses/transformation/:id', courses.transformOne);
 
-app.post('/courses/new', courses.addCourse);
-//{"coursetype":"letter","userId":5bc5a43159b84881d340d2e0,"length":10}
+app.post('/courses', courses.addCourse);
+//{"coursetype":"morse","userId":"5bc5b4a359b84881d340d2e5","length":7}
 
 app.put('/courses/:id',courses.updateScore);
 
@@ -45,7 +45,7 @@ app.get('/users/courselist/:id', users.courselist);
 app.get('/users/score/:id', users.fullScore);
 
 app.post('/users', users.addUser);
-//{"name":"Percival Graves"}
+//{"name":"Temp User"}
 
 app.put('/users/:id', users.updateName);
 

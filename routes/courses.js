@@ -29,7 +29,7 @@ router.findAll = (req, res) => {
         res.send(JSON.stringify(courses, null, 5));
     });
 }
-
+//REFACTORED
 router.findOne=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
 
@@ -42,24 +42,21 @@ router.findOne=(req,res)=>{
 
 };
 
+//REFACTORED
 router.deleteCourse = (req, res) => {
     // Return a JSON representation of our list
     res.setHeader('Content-Type', 'application/json');
-    var course=getByValue(courses,req.params.id);
-    if (course==null){
-        res.status(404).json({ error: 'Course not found' });
-        throw 'Course not found';
-    } else{
-        var currentSize = courses.length;
-        var index=courses.indexOf(course);
-        courses.splice(index, 1);
-        if((currentSize - 1) == courses.length)
-            res.send('Course Deleted');
+
+    Course.findByIdAndRemove(req.params.id, function(err) {
+        if (err)
+            res.send({message:"Course not Deleted",errmsg:err});
         else
-            res.send('Course NOT Deleted');
-    }
+            res.send('Course Deleted');
+    });
+
 }
 
+//REFACTORED
 router.updateScore=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
@@ -84,26 +81,24 @@ router.updateScore=(req,res)=>{
                 else
                 res.send(JSON.stringify("Score Updated",null,5));
             });
-
-
-
         }
+    });
+};
 
+//REFACTORED
+router.transformOne=(req,res)=>{
+    res.setHeader('Content-Type', 'application/json');
+
+    Course.findById(req.params.id ,function(err, course) {
+        if (err)
+            res.send({message:"Course not Found",errmsg:err});
+
+        res.send(JSON.stringify(transformcontentToObjects(course,req.params.id),null,5));
     });
 
 };
 
-router.transformOne=(req,res)=>{
-
-    res.setHeader('Content-Type', 'application/json');
-    var checkForCourse=getByValue(courses,req.params.id);
-    if (checkForCourse==null){
-        res.status(404).json({ error: 'Course not found' });
-        throw 'Course not found';
-    }
-    res.send(JSON.stringify(transformcontentToObjects(courses,req.params.id),null,5));
-};
-
+//REFACTORED
 router.addCourse=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
     var exception = !req.body.hasOwnProperty('coursetype')||!req.body.hasOwnProperty('userId');
@@ -112,34 +107,32 @@ router.addCourse=(req,res)=>{
         res.status(404).json({ error: 'No userId and/or coursetype parameter given, could not add course' });
         throw 'No userId and/or coursetype parameter given';
     }
+    /* TODO
     var checkForUser=getByValue(users,req.body.userId);
     if (checkForUser==null){
         res.status(404).json({ error: 'User not found' });
         throw 'User not found';
-    }
+    }*/
      exception = req.body.coursetype!="letter"&&req.body.coursetype!="morse";
 
     if (exception) {
         res.status(404).json({ error: 'Wrong CourseType given, could not add course' });
         throw 'Wrong CourseType given';
     }
-     var currentSize= courses.length;
-    var id = Math.floor(Math.random() * 2000000) + 1000000; //Randomly generate an id
-    var course= {};
-    course.id=id;
+
+    var course= new Course();
     course.coursetype=req.body.coursetype;
     course.userId=req.body.userId;
     course.score=0;
     course.coursecontent=createCourseContent(req.body.length);
 
-    res.send(JSON.stringify(course,null,5));
-    courses.push(course);
-    if((currentSize + 1) == courses.length)
-        res.json({ message: 'Course Added!'});
-    else {
-        res.status(404).json({error: 'Course not added'});
-        throw 'Course not added';
-    }
+    course.save(function(err) {
+        if (err)
+            res.send({message:"Course not Added",errmsg:err});
+        else
+            res.json({ message: 'Course Added!'});
+    });
+
 };
 
 
@@ -148,8 +141,7 @@ function getByValue(array, id) {
     return result ? result[0] : null; // or undefined
 }
 
-function transformcontentToObjects (courses,id){
-    let course = getByValue(courses,id);
+function transformcontentToObjects (course){
     let temp=[];
     course.coursecontent.forEach(function(element) {
         temp.push(morsecodes.find(function(item){
