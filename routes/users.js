@@ -4,8 +4,11 @@ let Course = require('../models/courses');
 let morsecodes = require('../models/morsecodes');
 var router = express.Router();
 let mongoose = require('mongoose');
+var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
 
-mongoose.connect('mongodb://localhost:27017/morsedb');
+
+//mongoose.connect('mongodb://localhost:27017/morsedb');
+mongoose.connect(mongodbUri);
 
 let db = mongoose.connection;
 
@@ -69,8 +72,32 @@ router.findOne=(req,res)=>{
     User.findById(req.params.id ,function(err, result) {
         if (err)
             res.send({message:"User not Found",errmsg:err});
+        if(result!==null)
+            res.send(JSON.stringify(result,null,5));
+        else
+            res.send({message:"User not Found"});
+    });
 
-        res.send(JSON.stringify(result,null,5));
+};
+router.findByName=(req,res)=>{
+
+    res.setHeader('Content-Type', 'application/json');
+
+    User.find(function(err, users) {
+        if (err)
+            res.send(err);
+        var temp=[];
+        users.filter(function(obj){
+            if( obj.name.match(req.params.filter)){
+                temp.push(obj);
+            }
+
+        } );
+
+        if(temp.length>0)
+            res.send(JSON.stringify(temp,null,5));
+        else
+            res.send({message:"No users found"});
     });
 
 };

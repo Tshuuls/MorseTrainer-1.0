@@ -4,8 +4,11 @@ let morsecodes = require('../models/morsecodes');
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
+var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
 
-mongoose.connect('mongodb://localhost:27017/morsedb');
+
+//mongoose.connect('mongodb://localhost:27017/morsedb');
+mongoose.connect(mongodbUri);
 
 let db = mongoose.connection;
 
@@ -37,7 +40,10 @@ router.findOne=(req,res)=>{
         if (err)
             res.send({message:"Course not Found",errmsg:err});
         else
-            res.send(JSON.stringify(course,null,5));
+            if(course.length==0)
+                res.send({message:"Course not Found"});
+            else
+                res.send(JSON.stringify(course,null,5));
     });
 
 };
@@ -101,19 +107,18 @@ router.transformOne=(req,res)=>{
 //REFACTORED
 router.addCourse=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
-    var exception = !req.body.hasOwnProperty('coursetype')||!req.body.hasOwnProperty('userId');
+    var exception = !req.body.hasOwnProperty('coursetype')||!req.body.hasOwnProperty('userId')||!req.body.hasOwnProperty('length');
 
     if (exception) {
-        res.status(404).json({ error: 'No userId and/or coursetype parameter given, could not add course' });
-        throw 'No userId and/or coursetype parameter given';
+        res.status(404).json({ error: 'No userId and/or coursetype and/or length parameter given, could not add course' });
+        throw 'No userId and/or coursetype and/or length parameter given';
     }
-    /* TODO
-    var checkForUser=getByValue(users,req.body.userId);
-    if (checkForUser==null){
-        res.status(404).json({ error: 'User not found' });
-        throw 'User not found';
-    }*/
-     exception = req.body.coursetype!="letter"&&req.body.coursetype!="morse";
+
+    User.findById(req.body.userId ,function(err, result) {
+        if (err)
+            res.send({message: "User not Found", errmsg: err});
+    });
+    exception = req.body.coursetype!="letter"&&req.body.coursetype!="morse";
 
     if (exception) {
         res.status(404).json({ error: 'Wrong CourseType given, could not add course' });

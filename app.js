@@ -32,7 +32,8 @@ app.get('/courses/:id', courses.findOne);
 app.get('/courses/transformation/:id', courses.transformOne);
 
 app.post('/courses', courses.addCourse);
-//{"coursetype":"morse","userId":"5bc5b4a359b84881d340d2e5","length":7}
+//{"coursetype":"morse","userId":"5bcc64f129ebe7f8da21df18","length":3}  Percival
+//{"coursetype":"letter","userId":"5bcc64fd29ebe7f8da21df19","length":7}  Matt
 
 app.put('/courses/:id',courses.updateScore);
 
@@ -43,6 +44,7 @@ app.get('/users', users.findAll);
 app.get('/users/:id', users.findOne);
 app.get('/users/courselist/:id', users.courselist);
 app.get('/users/score/:id', users.fullScore);
+app.get('/users/filter/:filter', users.findByName);
 
 app.post('/users', users.addUser);
 //{"name":"Temp User"}
