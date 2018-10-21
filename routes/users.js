@@ -6,6 +6,9 @@ var router = express.Router();
 let mongoose = require('mongoose');
 var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
 
+if (process.env.NODE_ENV === 'test') {
+    mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+}
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -193,4 +196,41 @@ function transformcontentToObjects (courses){
 
     return courses;
 };
+
+router.addTESTUser=(user)=>{
+        user.save(function(err) {
+            if (err)
+                console.log("Error while adding test USer");
+
+        });
+};
+
+router.getTESTUser=()=>{
+    User.find(function(err, users) {
+        if (err)
+            console.log("Error while getting test USer");
+
+        var result  = users.filter(function(obj){return obj.id} );
+        return result ? result[0] : null; // or undefined
+    });
+};
+
+router.deleteTESTUser=()=>{
+
+    User.find(function(err, users) {
+        if (err)
+            console.log(err);
+
+        users.filter(function(obj){
+            User.findByIdAndRemove(obj.id, function(err) {
+                if (err)
+                    console.log({message:"User not Deleted",errmsg:err});
+                else
+                    console.log('User Deleted');
+            });
+        } );
+    });
+
+};
+
 module.exports = router;

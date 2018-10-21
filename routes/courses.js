@@ -5,7 +5,9 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
-
+if (process.env.NODE_ENV === 'test') {
+    mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+}
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -57,7 +59,7 @@ router.deleteCourse = (req, res) => {
         if (err)
             res.send({message:"Course not Deleted",errmsg:err});
         else
-            res.send('Course Deleted');
+            res.send({message:'Course Deleted'});
     });
 
 }
@@ -70,23 +72,26 @@ router.updateScore=(req,res)=>{
         if (err)
             res.send({message:"Course not Found",errmsg:err});
         else{
-            var exception = !req.body.hasOwnProperty('score');
-            if (exception) {
-
-                res.send({message:"Score Not Updated - No Score parameter given",errmsg:err});
-            }
-            if(req.body.score==course.score){
-                res.send({message:"Score Not Updated - new score same as old score",errmsg:err});
-            }
-            var temp=course.score;
-            course.score=req.body.score;
-            course.save(function (err) {
-                if (err) {
-                    res.send({message:"Score Not Updated",errmsg:err});
+            try {
+                var exception = !req.body.hasOwnProperty('score');
+                if (exception) {
+                    throw 'Score Not Updated - No Score parameter given';
                 }
-                else
-                res.send(JSON.stringify("Score Updated",null,5));
-            });
+                if (req.body.score == course.score) {
+                    throw 'Score Not Updated - new score same as old score';
+                }
+                var temp = course.score;
+                course.score = req.body.score;
+                course.save(function (err) {
+                    if (err) {
+                        res.send({message: "Score Not Updated", errmsg: err});
+                    }
+                    else
+                        res.send(JSON.stringify({message: "Score Updated"}, null, 5));
+                });
+            }catch (err) {
+                res.status(404).json({error: err});
+            }
         }
     });
 };
@@ -98,7 +103,7 @@ router.transformOne=(req,res)=>{
     Course.findById(req.params.id ,function(err, course) {
         if (err)
             res.send({message:"Course not Found",errmsg:err});
-
+        else
         res.send(JSON.stringify(transformcontentToObjects(course,req.params.id),null,5));
     });
 
@@ -116,7 +121,7 @@ router.addCourse=(req,res)=>{
 
     User.findById(req.body.userId ,function(err, result) {
         if (err)
-            res.send({message: "User not Found", errmsg: err});
+            res.send({error: "User not Found", errmsg: err});
     });
     exception = req.body.coursetype!="letter"&&req.body.coursetype!="morse";
 
@@ -183,5 +188,43 @@ function transformcontentToIds (array){
         temp.push(element.id);
     });
     return temp;
+};
+
+router.addTESTCourse=(course,length)=>{
+    course.coursecontent=createCourseContent(length);
+    course.save(function(err) {
+        if (err)
+            console.log("Error while adding test course")
+        else
+            console.log("test course added")
+
+    });
+
+};
+router.getTESTCourse=()=>{
+    Course.find(function(err, users) {
+        if (err)
+            console.log("Error while getting test Courses");
+
+        var result  = users.filter(function(obj){return obj.id} );
+        return result ? result[0] : null; // or undefined
+    });
+};
+router.deleteTESTCourses=()=>{
+
+    Course.find(function(err, course) {
+        if (err)
+            console.log(err);
+
+        course.forEach(function(obj){
+            Course.findByIdAndRemove(obj.id, function(err) {
+                if (err)
+                    console.log({message:"Course not Deleted",errmsg:err});
+                else
+                    console.log('Course Deleted');
+            });
+        } );
+    });
+
 };
 module.exports = router;
