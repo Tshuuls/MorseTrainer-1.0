@@ -1,8 +1,13 @@
 {
     "env": {
         "browser": true,
-        "node": true
+        "node": true,
+        "mocha": true,
+        "mongo": true
     },
+    "plugins": [
+        "json"
+    ],
     "extends": "eslint:recommended",
     "rules": {
         "indent": [
