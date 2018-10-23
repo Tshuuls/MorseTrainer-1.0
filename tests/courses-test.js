@@ -258,7 +258,7 @@ describe('Courses', function (){
             });
             it('should return an error - same score', function(done) {
                 let score = {
-                    score: 0
+                    score: 5
                 };
                 let uri='/courses/'+courseID1;
                 chai.request(server)
@@ -302,7 +302,7 @@ describe('Courses', function (){
                             if (err)
                                 console.log({message:"Course not Found",errmsg:err});
                             else{
-                                course.score=0;
+                                course.score=5;
 
                                 course.save(function (err) {
                                     if(err) {
@@ -350,7 +350,7 @@ describe('Courses', function (){
 
                 Course.find(function(err, courses) {
                     if (err) {
-                        res.send(err);
+                        console.log(err);
                         done();
                     }
                     else{

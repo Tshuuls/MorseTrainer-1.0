@@ -5,7 +5,7 @@ let morsecodes = require('../models/morsecodes');
 var router = express.Router();
 let mongoose = require('mongoose');
 var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
-
+//var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 if (process.env.NODE_ENV === 'test') {
     mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 }
@@ -42,27 +42,40 @@ router.deleteUser = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     User.findByIdAndRemove(req.params.id, function(err) {
         if (err)
-            res.send({message:"User not Deleted",errmsg:err});
+            res.send({message:"User not Found",errmsg:err});
         else
-            res.send('User Deleted');
+            res.send({message:'User Deleted'});
     });
 }
 //REFACTORED
 router.courselist=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
-    User.findById(req.params.id ,function(err, result) {
+    User.findById(req.params.id ,function(err, users) {
         if (err)
             res.send({message:"User not Found",errmsg:err});
+        else{
+            //console.log(users);
+            Course.find(function(err, courses) {
+                if (err)
+                    res.send({message:"no Courses found",errmsg:err});
+                else{
+                    var courselist=getCoursesByUserID(courses,req.params.id);
+                    //console.log(req.params.id);
+                    //console.log(courselist);
+                    if(courselist.length==0){
+                        res.send({message:"no Courses found for user: "+req.params.id,errmsg:err});
+                    }
+                    else{
+                        courselist=transformcontentToObjects(courselist);
+                        res.send(JSON.stringify(courselist,null,5));
+                    }
 
-        Course.find(function(err, courses) {
-            if (err)
-                res.send({message:"no Courses found",errmsg:err});
+                }
 
-            var courselist=getCoursesByUserID(courses,req.params.id);
-            courselist=transformcontentToObjects(courselist);
-            res.send(JSON.stringify(courselist,null,5));
-        });
+            });
+        }
+
     });
 
 
@@ -96,11 +109,11 @@ router.findByName=(req,res)=>{
             }
 
         } );
-
         if(temp.length>0)
+
             res.send(JSON.stringify(temp,null,5));
         else
-            res.send({message:"No users found"});
+            res.send({message:"No users found with: "+req.params.filter});
     });
 
 };
@@ -113,22 +126,24 @@ router.updateName=(req,res)=>{
         if (err)
             res.send({message:"User not Found",errmsg:err});
         else {
-            var exception = !req.body.hasOwnProperty('name');
-            if (exception) {
-                res.status(404).json({ error: 'No Name parameter given, could not update Name' });
-                throw 'No Name parameter given';
+            try {
+                var exception = !req.body.hasOwnProperty('name');
+                if (exception) {
+                    throw 'No Name parameter given';
+                }
+                if (req.body.name == user.name) {
+                    throw 'New Name same as old Name, no update';
+                }
+                user.name = req.body.name;
+                user.save(function (err) {
+                    if (err)
+                        res.send({message: "Name not Updated", errmsg: err});
+                    else
+                        res.send(JSON.stringify({message:"Name Updated"}, null, 5));
+                });
+            }catch (err) {
+                res.status(404).json({error: err});
             }
-            if(req.body.name==user.name){
-                res.status(404).json({ error: 'New Name same as old Name, no update' });
-                throw 'New Name same as old Name, no update';
-            }
-            user.name = req.body.name;
-            user.save(function (err) {
-                if (err)
-                    res.send({message:"Name not Updated",errmsg:err});
-                else
-                    res.send(JSON.stringify("Name Updated",null,5));
-            });
         }
     });
 };
@@ -159,17 +174,26 @@ router.fullScore=(req,res)=>{
     User.findById(req.params.id ,function(err, result) {
         if (err)
             res.send({message:"User not Found",errmsg:err});
+        else{
+            Course.find(function(err, courses) {
+                if (err)
+                    res.send({message:"no Courses found",errmsg:err});
+                else{
+                    var temp=getCoursesByUserID(courses,req.params.id);
+                    if(temp.length==0){
+                        res.send({message:"no Courses found for user: "+req.params.id,errmsg:err});
+                    }else{
+                        temp.forEach(function(element) {
+                            fullscore.fullscore+=element.score;
+                        });
+                        res.send(JSON.stringify(fullscore),null,5);
+                    }
 
-        Course.find(function(err, courses) {
-            if (err)
-                res.send({message:"no Courses found",errmsg:err});
+                }
 
-            var temp=getCoursesByUserID(courses,req.params.id);
-            temp.forEach(function(element) {
-                fullscore.fullscore+=element.score;
             });
-            res.send(JSON.stringify(fullscore),null,5);
-        });
+        }
+
     });
 
 };

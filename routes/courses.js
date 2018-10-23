@@ -5,6 +5,7 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/morsedb';
+//var mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 if (process.env.NODE_ENV === 'test') {
     mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 }
