@@ -2,10 +2,100 @@
 <html>
   <head>
     <title><%= title %></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <h1><%= title %></h1>
+  <p style="margin-bottom: 0px">Welcome to <%= title %></p>
+  <p style="margin-bottom: 50px">.-- . .-.. -.-. --- -- . / - --- / -- --- .-. ... . - .-. .- .. -. . .-. / ...- .----</p>
+  <h3>Courses</h3>
+    <table class="table col-7">
+      <tr>
+        <th>Resource</th>
+        <th>URI</th>
+        <th>HTTP Request</th>
+      </tr>
+      <tr>
+        <td>List of Courses</td>
+        <td>/courses</td>
+        <td>GET</td>
+      </tr>
+      <tr>
+        <td>Single Course</td>
+        <td>/courses/:id</td>
+        <td>GET</td>
+      </tr>
+      <tr>
+        <td>Single Course with transformed content</td>
+        <td>/courses/transformation/:id</td>
+        <td>GET</td>
+      </tr>
+      <tr>
+        <td>Add a Course</td>
+        <td>/courses</td>
+        <td>POST</td>
+      </tr>
+      <tr>
+        <td>Update Course Score</td>
+        <td>/courses/:id</td>
+        <td>PUT</td>
+      </tr>
+      <tr>
+        <td>Delete Course by Id</td>
+        <td>/courses/:id</td>
+        <td>DELETE</td>
+      </tr>
+    </table>
+
+  <h3>Users</h3>
+  <table class="table col-7">
+    <tr>
+      <th>Resource</th>
+      <th>URI</th>
+      <th>HTTP Request</th>
+    </tr>
+    <tr>
+      <td>List of Users</td>
+      <td>/users</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>Single User</td>
+      <td>/users/:id</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>List of Courses of specific User</td>
+      <td>/users/courselist</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>Full Score of User</td>
+      <td>/users/score/:id</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>Users with Specific Name</td>
+      <td>/users/filter/:filter</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>Add User</td>
+      <td>/users</td>
+      <td>POST</td>
+    </tr>
+    <tr>
+      <td>Update User Name</td>
+      <td>/users/:id</td>
+      <td>PUT</td>
+    </tr>
+    <tr>
+      <td>Detele User by Id</td>
+      <td>/users/:id</td>
+      <td>DELETE</td>
+    </tr>
+  </table>
   </body>
 </html>
