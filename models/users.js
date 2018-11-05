@@ -2,7 +2,8 @@
 let mongoose = require('mongoose');
 
 let UserSchema = new mongoose.Schema({
-        name: String
+        firstname: String,
+        lastname:String
     },
     { collection: 'users' });
 

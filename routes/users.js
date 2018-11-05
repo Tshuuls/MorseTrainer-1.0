@@ -104,7 +104,9 @@ router.findByName=(req,res)=>{
             res.send(err);
         var temp=[];
         users.filter(function(obj){
-            if( obj.name.match(req.params.filter)){
+            var tempname= obj.firstname + " " +obj.lastname;
+            tempname=tempname.toUpperCase();
+            if( tempname.match(req.params.filter.toUpperCase())){
                 temp.push(obj);
             }
 
@@ -127,14 +129,15 @@ router.updateName=(req,res)=>{
             res.send({message:"User not Found",errmsg:err});
         else {
             try {
-                var exception = !req.body.hasOwnProperty('name');
+                var exception = !req.body.hasOwnProperty('firstname')||!req.body.hasOwnProperty('lastname');
                 if (exception) {
                     throw 'No Name parameter given';
                 }
-                if (req.body.name == user.name) {
+                if (req.body.firstname == user.firstname&&req.body.lastname == user.lastname) {
                     throw 'New Name same as old Name, no update';
                 }
-                user.name = req.body.name;
+                user.firstname = req.body.firstname;
+                user.lastname = req.body.lastname;
                 user.save(function (err) {
                     if (err)
                         res.send({message: "Name not Updated", errmsg: err});
@@ -150,20 +153,21 @@ router.updateName=(req,res)=>{
 //REFACTORED
 router.addUser=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
-    var exception = !req.body.hasOwnProperty('name');
+    var exception = !req.body.hasOwnProperty('firstname')||!req.body.hasOwnProperty('lastname');
 
     if (exception) {
         res.status(404).json({ error: 'No Name parameter given, could not add user' });
         throw 'No Name parameter given';
     }
     var newuser= new User();
-    newuser.name=req.body.name;
+    newuser.firstname=req.body.firstname;
+    newuser.lastname=req.body.lastname;
 
     newuser.save(function(err) {
         if (err)
             res.send({message:"User not Added",errmsg:err});
         else
-            res.json({ message: 'User Added!'});
+            res.json({ message: 'User Added!',userID:newuser._id.toString()});
     });
 };
 //REFACTORED
