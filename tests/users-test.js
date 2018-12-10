@@ -1,5 +1,6 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
+let server = require('../bin/www');
 let expect = chai.expect;
 chai.use(require('chai-things'));
 let mongoose = require('mongoose');
@@ -11,7 +12,6 @@ var users = require("../routes/users");
 var courses = require('../routes/courses');
 let User = require('../models/users');
 let Course = require('../models/courses');
-var server = null ; // CHANGED
 
 let mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 
@@ -38,13 +38,6 @@ var courseID3=null;
 var uri="";
 
 describe('Users', function (){
-    before(function(){
-        delete require.cache[require.resolve('../bin/www')];
-        server = require('../bin/www');
-    });
-    after(function (done) {
-        server.close(done);
-    });
 
     before(function(done){
         User.deleteMany({},function(){
@@ -71,7 +64,7 @@ describe('Users', function (){
             }
         });
     });
-        before(function(done){
+    before(function(done){
         var newuser2= new User();
         newuser2.firstname="Test";
         newuser2.lastname="User2";
@@ -85,7 +78,7 @@ describe('Users', function (){
                 done();
             }
         });
-        });
+    });
     before(function(done){
         var newuser3= new User();
         newuser3.firstname="User";
@@ -205,7 +198,7 @@ describe('Users', function (){
                     done();
                 });
         });
-       it('should return an error - no courses found', function(done) {
+        it('should return an error - no courses found', function(done) {
 
             chai.request(server)
                 .get('/users/courselist/'+userID2)
@@ -248,7 +241,7 @@ describe('Users', function (){
                     done();
                 });
         });
-           it('should return an error - no courses found', function(done) {
+        it('should return an error - no courses found', function(done) {
 
             chai.request(server)
                 .get('/users/score/'+userID2)
