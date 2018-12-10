@@ -1,6 +1,5 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../bin/www');
 let expect = chai.expect;
 chai.use(require('chai-things'));
 let mongoose = require('mongoose');
@@ -13,7 +12,9 @@ var courses = require('../routes/courses');
 let User = require('../models/users');
 let Course = require('../models/courses');
 
-    mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+var server = null ; // CHANGED
+
+   let mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -36,6 +37,15 @@ var courseID2=null;
 var courseID3=null;
 
 describe('Courses', function (){
+
+    before(function(){
+        delete require.cache[require.resolve('../bin/www')];
+        server = require('../bin/www');
+    });
+    after(function (done) {
+        server.close(done);
+    });
+
     before(function(done){
         User.deleteMany({},function(){
             done();
@@ -250,7 +260,7 @@ describe('Courses', function (){
             });
         });
         describe('Standart Flow',  () => {
-            it('should add new course', function(done) {
+            /*it('should add new course', function(done) {
                 let course = {
                     coursetype: 'letter' ,
                     userId: userID,
@@ -292,7 +302,7 @@ describe('Courses', function (){
                         });
                         ;
                     });
-            });
+            });*/
         });
 
     });

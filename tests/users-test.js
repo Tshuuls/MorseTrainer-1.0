@@ -1,6 +1,5 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../bin/www');
 let expect = chai.expect;
 chai.use(require('chai-things'));
 let mongoose = require('mongoose');
@@ -12,8 +11,9 @@ var users = require("../routes/users");
 var courses = require('../routes/courses');
 let User = require('../models/users');
 let Course = require('../models/courses');
+var server = null ; // CHANGED
 
-mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+let mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -38,6 +38,13 @@ var courseID3=null;
 var uri="";
 
 describe('Users', function (){
+    before(function(){
+        delete require.cache[require.resolve('../bin/www')];
+        server = require('../bin/www');
+    });
+    after(function (done) {
+        server.close(done);
+    });
 
     before(function(done){
         User.deleteMany({},function(){
