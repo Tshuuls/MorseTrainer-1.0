@@ -8,5 +8,7 @@ notifications:
     - julia.z@chello.at
     on_success: never        # default: change
     on_failure: always       # default: always
+script:
+  - npm run coverage
 branches:
   only: development
