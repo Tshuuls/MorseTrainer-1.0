@@ -10,5 +10,7 @@ notifications:
     on_failure: always       # default: always
 script:
   - npm run coverage
+after_success:
+  - npm run publish-coverage
 branches:
   only: development

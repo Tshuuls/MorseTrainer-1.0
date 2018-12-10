@@ -12,7 +12,8 @@
     "prebuild": "npm-run-all test clean",
     "server:watch": "cross-env NODE_ENV=dev nodemon --exec babel-node bin/www",
     "test:watch": "npm run test -- --watch",
-    "coverage": "cross-env NODE_ENV=test PORT=4000 nyc mocha tests/users-test.js mocha tests/courses-test.js"
+    "coverage": "cross-env NODE_ENV=test PORT=4000 nyc mocha tests/users-test.js mocha tests/courses-test.js",
+    "publish-coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
