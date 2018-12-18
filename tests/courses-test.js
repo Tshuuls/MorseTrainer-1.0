@@ -13,7 +13,8 @@ var courses = require('../routes/courses');
 let User = require('../models/users');
 let Course = require('../models/courses');
 
-    mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+
+   let mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -30,13 +31,89 @@ db.once('open', function () {
 
 /*var cat = null;
 var invoice = null;*/
-var userID="5bcc7c1a078bcd01249cec60";
-var courseID1="5bcc88768574d7028aac9502";
-var courseID2="5bcc8896a5014c029002dc0d";
+var userID=null;
+var courseID1=null;
+var courseID2=null;
 var courseID3=null;
 
 describe('Courses', function (){
 
+
+
+    before(function(done){
+        User.deleteMany({},function(){
+            done();
+        });
+    });
+    before(function(done){
+        Course.deleteMany({},function(){
+            done();
+        });
+    });
+    before(function(done){
+        var newuser= new User();
+        newuser.username="Test";
+        newuser.email="User1";
+
+        newuser.save(function(err) {
+            if (err)
+                console.log({message:"User not Added",errmsg:err});
+            else{
+                console.log({ message: 'User Added!',userID:newuser._id});
+                userID=newuser._id.toString();
+                done();
+            }
+        });
+    });
+
+    before(function(done){
+
+        var course= new Course();
+        course.coursetype="morse";
+        course.userId=userID;
+        course.score=5;
+        course.coursecontent=[
+            7,
+            13,
+            21
+        ];
+
+        course.save(function(err) {
+            if (err)
+                console.log({message:"Course not Added",errmsg:err});
+            else
+            {
+                console.log({ message: 'Course Added!',courseID:course._id});
+                courseID1=course._id.toString();
+                done();
+            }
+        });
+    });
+    before(function(done){
+
+        var course2= new Course();
+        course2.coursetype="morse";
+        course2.userId=userID;
+        course2.score=7;
+        course2.coursecontent=[
+            22,
+            1,
+            19,
+            23,
+            7
+        ];
+
+        course2.save(function(err) {
+            if (err)
+                console.log({message:"Course not Added",errmsg:err});
+            else
+            {
+                console.log({ message: 'Course Added!',courseID:course2._id});
+                courseID2=course2._id.toString();
+                done();
+            }
+        });
+    });
 
     describe('GET /courses',  () => {
         it('should return all the courses in an array', function(done) {
@@ -177,7 +254,7 @@ describe('Courses', function (){
             });
         });
         describe('Standart Flow',  () => {
-            it('should add new course', function(done) {
+            /*it('should add new course', function(done) {
                 let course = {
                     coursetype: 'letter' ,
                     userId: userID,
@@ -219,7 +296,7 @@ describe('Courses', function (){
                         });
                         ;
                     });
-            });
+            });*/
         });
 
     });

@@ -104,7 +104,7 @@ router.findByName=(req,res)=>{
             res.send(err);
         var temp=[];
         users.filter(function(obj){
-            if( obj.name.match(req.params.filter)){
+            if( obj.email.match(req.params.filter)){
                 temp.push(obj);
             }
 
@@ -127,19 +127,19 @@ router.updateName=(req,res)=>{
             res.send({message:"User not Found",errmsg:err});
         else {
             try {
-                var exception = !req.body.hasOwnProperty('name');
+                var exception = !req.body.hasOwnProperty('email');
                 if (exception) {
-                    throw 'No Name parameter given';
+                    throw 'No email parameter given';
                 }
-                if (req.body.name == user.name) {
-                    throw 'New Name same as old Name, no update';
+                if (req.body.email == user.email) {
+                    throw 'New Email same as old Email, no update';
                 }
-                user.name = req.body.name;
+                user.email = req.body.email;
                 user.save(function (err) {
                     if (err)
-                        res.send({message: "Name not Updated", errmsg: err});
+                        res.send({message: "Email not Updated", errmsg: err});
                     else
-                        res.send(JSON.stringify({message:"Name Updated"}, null, 5));
+                        res.send(JSON.stringify({message:"Email Updated"}, null, 5));
                 });
             }catch (err) {
                 res.status(404).json({error: err});
@@ -150,14 +150,15 @@ router.updateName=(req,res)=>{
 //REFACTORED
 router.addUser=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
-    var exception = !req.body.hasOwnProperty('name');
+    var exception = !req.body.hasOwnProperty('email')||!req.body.hasOwnProperty('id');
 
     if (exception) {
-        res.status(404).json({ error: 'No Name parameter given, could not add user' });
+        res.status(404).json({ error: 'No Name or FirebaseID parameter given, could not add user' });
         throw 'No Name parameter given';
     }
     var newuser= new User();
-    newuser.name=req.body.name;
+    newuser.email=req.body.email;
+    newuser.firebaseID=req.body.id;
 
     newuser.save(function(err) {
         if (err)
