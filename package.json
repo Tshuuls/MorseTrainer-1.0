@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    /*"start": "npm-run-all test build server",*/
+    "start": "npm-run-all test build server",
     "test": "NODE_ENV=test npm run coverage",
     "build": "babel ./ --out-dir lib/ --ignore ./node_modules,./.babelrc,./package.json,./package-lock.json,./test --copy-files",
     "server": "cross-env NODE_ENV=dev PORT=3001 node lib/bin/www",
