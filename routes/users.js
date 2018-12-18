@@ -153,7 +153,7 @@ router.addUser=(req,res)=>{
     var exception = !req.body.hasOwnProperty('email')||!req.body.hasOwnProperty('id');
 
     if (exception) {
-        res.status(404).json({ error: 'No Name or FirebaseID parameter given, could not add user' });
+        res.status(405).json({ error: 'No Name or FirebaseID parameter given, could not add user' });
         throw 'No Name parameter given';
     }
     var newuser= new User();
