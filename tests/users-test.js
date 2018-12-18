@@ -28,17 +28,18 @@ db.once('open', function () {
     console.log('Successfully Connected to [ ' + db.name + ' ]');
 });
 
-var userID=null;
-var userID2=null;
-var userID3=null;
+var userID="5bcc7c1a078bcd01249cec60";
+var userID2="5bcdb1528108fe158219c9e2";
+var userID3="5bcdc893586b3617879f6d21";
 var userID4=null;
-var courseID1=null;
-var courseID2=null;
+var courseID1="5bcc88768574d7028aac9502";
+var courseID2="5bcc8896a5014c029002dc0d";
 var courseID3=null;
 var uri="";
 
 describe('Users', function (){
 
+<<<<<<< HEAD
     before(function(done){
         User.deleteMany({},function(){
             done();
@@ -142,6 +143,9 @@ describe('Users', function (){
             }
         });
     });
+=======
+
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
     describe('GET /users',  () => {
         it('should return all the users in an array', function(done) {
             chai.request(server)
@@ -151,9 +155,15 @@ describe('Users', function (){
                     expect(res.body).to.be.a('array');
                     expect(res.body.length).to.equal(3);
                     let result = _.map(res.body, (user) => {
+<<<<<<< HEAD
                         return { id: user._id, username:user.username,email:user.email}
                     });
                     expect(result).to.include( {id:userID,username:"Test",email:"User1"} );
+=======
+                        return { id: user._id, name:user.name}
+                    });
+                    expect(result).to.include( {id:userID,name:"Test User1"} );
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                     done();
                 });
         });
@@ -166,7 +176,11 @@ describe('Users', function (){
                 .get('/users/'+userID)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
+<<<<<<< HEAD
                     expect(res.body).to.include( {_id:userID,username:"Test",email:"User1"} );
+=======
+                    expect(res.body).to.include( {_id:userID,name:"Test User1"} );
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                     done();
                 });
         });
@@ -297,14 +311,17 @@ describe('Users', function (){
         });
         describe('Standart Flow',  () => {
             it('should add User', function(done) {
+<<<<<<< HEAD
                 let user={username:"Added",email:"User"};
+=======
+                let user={name:"Added User"};
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 chai.request(server)
                     .post('/users')
                     .send(user)
                     .end((err, res) => {
                         expect(res).to.have.status(200);
                         expect(res.body).to.have.property('message').equal('User Added!' );
-                        userID4=res.body.userID;
                         done();
                     });
             });after(function  (done) {
@@ -315,11 +332,23 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(4);
                         let result = _.map(res.body, (user) => {
+<<<<<<< HEAD
                             return { username: user.username,email: user.email};
                         }  );
                         expect(result).to.include( { username:"Added",email:"User" } );
+=======
+                            return { name: user.name};
+                        }  );
+                        expect(result).to.include( { name: 'Added User'  } );
 
-                        User.findByIdAndRemove(userID4, function(err) {
+                        var tempid  = res.body.filter(function(obj){
+                            if (obj.name== 'Added User') {
+                                return obj ;
+                            }
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
+
+                        } );
+                        User.findByIdAndRemove(tempid, function(err) {
                             if (err)
                                 console.log({message:"User not Deleted",errmsg:err});
                             else
@@ -355,7 +384,11 @@ describe('Users', function (){
                     });
             });
             it('should return Error - new name same as old name', function(done) {
+<<<<<<< HEAD
                 let user={username:"User",email:"3"};
+=======
+                let user={name:"User 3"};
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -367,8 +400,13 @@ describe('Users', function (){
             });
         });
         describe('Standart Flow',  () => {
+<<<<<<< HEAD
             it('should change username', function(done) {
                 let user={username:"New",email:"UserName"};
+=======
+            it('should add User', function(done) {
+                let user={name:"New UserName"};
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -385,16 +423,26 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(3);
                         let result = _.map(res.body, (user) => {
+<<<<<<< HEAD
                             return {username: user.username ,email: user.email};
                         }  );
                         expect(result).to.include( { username:"New",email:"UserName"  } );
+=======
+                            return { name: user.name};
+                        }  );
+                        expect(result).to.include( { name: 'New UserName'  } );
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
 
                         User.findById(userID3 ,function(err, user) {
                             if (err)
                                 console.log({message:"User not Found",errmsg:err});
                             else{
+<<<<<<< HEAD
                                 user.username="User";
                                 user.email="3";
+=======
+                                user.name="User 3";
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
 
                                 user.save(function (err) {
                                     if(err) {

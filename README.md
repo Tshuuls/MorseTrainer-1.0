@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Assignment 2 - Web API - Automated development process.
 
 Name: Julia Zeckl
@@ -35,3 +36,8 @@ https://coveralls.io/github/Tshuuls/MorseTrainer-1.0
 
 ## Extra features.
 -
+=======
+# MorseTrainer_1
+
+test
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema

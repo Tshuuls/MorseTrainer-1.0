@@ -104,9 +104,13 @@ router.findByName=(req,res)=>{
             res.send(err);
         var temp=[];
         users.filter(function(obj){
+<<<<<<< HEAD
             var tempname= obj.username;
             tempname=tempname.toUpperCase();
             if( tempname.match(req.params.filter.toUpperCase())){
+=======
+            if( obj.name.match(req.params.filter)){
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 temp.push(obj);
             }
 
@@ -129,14 +133,25 @@ router.updateEmail=(req,res)=>{
             res.send({message:"User not Found",errmsg:err});
         else {
             try {
+<<<<<<< HEAD
                 var exception = !req.body.hasOwnProperty('email');
+=======
+                var exception = !req.body.hasOwnProperty('name');
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 if (exception) {
                     throw 'No Email parameter given';
                 }
+<<<<<<< HEAD
                 if (req.body.username == user.username&&req.body.email == user.email) {
                     throw 'New Email same as old email, no update';
                 }
                 user.email = req.body.email;
+=======
+                if (req.body.name == user.name) {
+                    throw 'New Name same as old Name, no update';
+                }
+                user.name = req.body.name;
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
                 user.save(function (err) {
                     if (err)
                         res.send({message: "Email not Updated", errmsg: err});
@@ -152,7 +167,11 @@ router.updateEmail=(req,res)=>{
 //REFACTORED
 router.addUser=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
+<<<<<<< HEAD
     var exception = !req.body.hasOwnProperty('email');
+=======
+    var exception = !req.body.hasOwnProperty('name');
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
 
     if (exception) {
         res.status(404).json({ error: 'No Name or email parameter given, could not add user' });
@@ -165,15 +184,19 @@ router.addUser=(req,res)=>{
         throw 'No Name parameter given';
     }
     var newuser= new User();
+<<<<<<< HEAD
     newuser.email=req.body.email;
     newuser.firebaseid=req.body.id;
     
+=======
+    newuser.name=req.body.name;
+>>>>>>> parent of 974cac5... User schema updated user routes and tests refactored to match changes in schema
 
     newuser.save(function(err) {
         if (err)
             res.send({message:"User not Added",errmsg:err});
         else
-            res.json({ message: 'User Added!',userID:newuser._id.toString()});
+            res.json({ message: 'User Added!'});
     });
 };
 //REFACTORED
