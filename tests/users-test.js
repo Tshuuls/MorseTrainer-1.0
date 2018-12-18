@@ -51,8 +51,8 @@ describe('Users', function (){
     });
     before(function(done){
         var newuser= new User();
-        newuser.firstname="Test";
-        newuser.lastname="User1";
+        newuser.username="Test";
+        newuser.email="User1";
 
         newuser.save(function(err) {
             if (err)
@@ -66,8 +66,8 @@ describe('Users', function (){
     });
     before(function(done){
         var newuser2= new User();
-        newuser2.firstname="Test";
-        newuser2.lastname="User2";
+        newuser2.username="Test";
+        newuser2.email="User2";
 
         newuser2.save(function(err) {
             if (err)
@@ -81,8 +81,8 @@ describe('Users', function (){
     });
     before(function(done){
         var newuser3= new User();
-        newuser3.firstname="User";
-        newuser3.lastname="3";
+        newuser3.username="User";
+        newuser3.email="3";
 
         newuser3.save(function(err) {
             if (err)
@@ -151,9 +151,9 @@ describe('Users', function (){
                     expect(res.body).to.be.a('array');
                     expect(res.body.length).to.equal(3);
                     let result = _.map(res.body, (user) => {
-                        return { id: user._id, firstname:user.firstname,lastname:user.lastname}
+                        return { id: user._id, username:user.username,email:user.email}
                     });
-                    expect(result).to.include( {id:userID,firstname:"Test",lastname:"User1"} );
+                    expect(result).to.include( {id:userID,username:"Test",email:"User1"} );
                     done();
                 });
         });
@@ -166,7 +166,7 @@ describe('Users', function (){
                 .get('/users/'+userID)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
-                    expect(res.body).to.include( {_id:userID,firstname:"Test",lastname:"User1"} );
+                    expect(res.body).to.include( {_id:userID,username:"Test",email:"User1"} );
                     done();
                 });
         });
@@ -289,7 +289,7 @@ describe('Users', function (){
                     .send(user)
                     .end((err, res) => {
                         expect(res).to.have.status(404);
-                        expect(res.body).to.have.property('error').equal('No Name parameter given, could not add user' );
+                        expect(res.body).to.have.property('error').equal('No Name or email parameter given, could not add user' );
                         done();
                     });
             });
@@ -297,7 +297,7 @@ describe('Users', function (){
         });
         describe('Standart Flow',  () => {
             it('should add User', function(done) {
-                let user={firstname:"Added",lastname:"User"};
+                let user={username:"Added",email:"User"};
                 chai.request(server)
                     .post('/users')
                     .send(user)
@@ -315,9 +315,9 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(4);
                         let result = _.map(res.body, (user) => {
-                            return { firstname: user.firstname,lastname: user.lastname};
+                            return { username: user.username,email: user.email};
                         }  );
-                        expect(result).to.include( { firstname:"Added",lastname:"User" } );
+                        expect(result).to.include( { username:"Added",email:"User" } );
 
                         User.findByIdAndRemove(userID4, function(err) {
                             if (err)
@@ -355,7 +355,7 @@ describe('Users', function (){
                     });
             });
             it('should return Error - new name same as old name', function(done) {
-                let user={firstname:"User",lastname:"3"};
+                let user={username:"User",email:"3"};
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -368,7 +368,7 @@ describe('Users', function (){
         });
         describe('Standart Flow',  () => {
             it('should change username', function(done) {
-                let user={firstname:"New",lastname:"UserName"};
+                let user={username:"New",email:"UserName"};
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -385,16 +385,16 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(3);
                         let result = _.map(res.body, (user) => {
-                            return {firstname: user.firstname ,lastname: user.lastname};
+                            return {username: user.username ,email: user.email};
                         }  );
-                        expect(result).to.include( { firstname:"New",lastname:"UserName"  } );
+                        expect(result).to.include( { username:"New",email:"UserName"  } );
 
                         User.findById(userID3 ,function(err, user) {
                             if (err)
                                 console.log({message:"User not Found",errmsg:err});
                             else{
-                                user.firstname="User";
-                                user.lastname="3";
+                                user.username="User";
+                                user.email="3";
 
                                 user.save(function (err) {
                                     if(err) {

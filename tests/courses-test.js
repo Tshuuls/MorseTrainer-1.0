@@ -52,8 +52,8 @@ describe('Courses', function (){
     });
     before(function(done){
         var newuser= new User();
-        newuser.firstname="Test";
-        newuser.lastname="User1";
+        newuser.username="Test";
+        newuser.email="User1";
 
         newuser.save(function(err) {
             if (err)

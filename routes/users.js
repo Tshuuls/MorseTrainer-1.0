@@ -104,7 +104,7 @@ router.findByName=(req,res)=>{
             res.send(err);
         var temp=[];
         users.filter(function(obj){
-            var tempname= obj.firstname + " " +obj.lastname;
+            var tempname= obj.username;
             tempname=tempname.toUpperCase();
             if( tempname.match(req.params.filter.toUpperCase())){
                 temp.push(obj);
@@ -119,8 +119,8 @@ router.findByName=(req,res)=>{
     });
 
 };
-//REFACTORED
-router.updateName=(req,res)=>{
+
+router.updateEmail=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
 
@@ -129,20 +129,19 @@ router.updateName=(req,res)=>{
             res.send({message:"User not Found",errmsg:err});
         else {
             try {
-                var exception = !req.body.hasOwnProperty('firstname')||!req.body.hasOwnProperty('lastname');
+                var exception = !req.body.hasOwnProperty('email');
                 if (exception) {
-                    throw 'No Name parameter given';
+                    throw 'No Email parameter given';
                 }
-                if (req.body.firstname == user.firstname&&req.body.lastname == user.lastname) {
-                    throw 'New Name same as old Name, no update';
+                if (req.body.username == user.username&&req.body.email == user.email) {
+                    throw 'New Email same as old email, no update';
                 }
-                user.firstname = req.body.firstname;
-                user.lastname = req.body.lastname;
+                user.email = req.body.email;
                 user.save(function (err) {
                     if (err)
-                        res.send({message: "Name not Updated", errmsg: err});
+                        res.send({message: "Email not Updated", errmsg: err});
                     else
-                        res.send(JSON.stringify({message:"Name Updated"}, null, 5));
+                        res.send(JSON.stringify({message:"Email Updated"}, null, 5));
                 });
             }catch (err) {
                 res.status(404).json({error: err});
@@ -153,15 +152,21 @@ router.updateName=(req,res)=>{
 //REFACTORED
 router.addUser=(req,res)=>{
     res.setHeader('Content-Type', 'application/json');
-    var exception = !req.body.hasOwnProperty('firstname')||!req.body.hasOwnProperty('lastname');
+    var exception = !req.body.hasOwnProperty('email');
 
     if (exception) {
-        res.status(404).json({ error: 'No Name parameter given, could not add user' });
+        res.status(404).json({ error: 'No Name or email parameter given, could not add user' });
+        throw 'No Name parameter given';
+    }
+    var exception2 = !req.body.hasOwnProperty('id');
+
+    if (exception2) {
+        res.status(404).json({ error: 'No ID parameter given, could not add user' });
         throw 'No Name parameter given';
     }
     var newuser= new User();
-    newuser.firstname=req.body.firstname;
-    newuser.lastname=req.body.lastname;
+    newuser.email=req.body.email;
+    newuser.firebaseid=req.body.id;
 
     newuser.save(function(err) {
         if (err)
