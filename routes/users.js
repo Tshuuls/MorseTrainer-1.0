@@ -167,6 +167,7 @@ router.addUser=(req,res)=>{
     var newuser= new User();
     newuser.email=req.body.email;
     newuser.firebaseid=req.body.id;
+    
 
     newuser.save(function(err) {
         if (err)
