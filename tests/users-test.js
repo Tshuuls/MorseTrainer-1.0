@@ -13,7 +13,7 @@ var courses = require('../routes/courses');
 let User = require('../models/users');
 let Course = require('../models/courses');
 
-let mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
+mongodbUri ='mongodb://User1:testUser1@ds137643.mlab.com:37643/testmorsedb';
 
 //mongoose.connect('mongodb://localhost:27017/morsedb');
 mongoose.connect(mongodbUri);
@@ -28,120 +28,18 @@ db.once('open', function () {
     console.log('Successfully Connected to [ ' + db.name + ' ]');
 });
 
-var userID=null;
-var userID2=null;
-var userID3=null;
+var userID="5bcc7c1a078bcd01249cec60";
+var userID2="5bcdb1528108fe158219c9e2";
+var userID3="5bcdc893586b3617879f6d21";
 var userID4=null;
-var courseID1=null;
-var courseID2=null;
+var courseID1="5bcc88768574d7028aac9502";
+var courseID2="5bcc8896a5014c029002dc0d";
 var courseID3=null;
 var uri="";
 
 describe('Users', function (){
 
-    before(function(done){
-        User.deleteMany({},function(){
-            done();
-        });
-    });
-    before(function(done){
-        Course.deleteMany({},function(){
-            done();
-        });
-    });
-    before(function(done){
-        var newuser= new User();
-        newuser.username="Test";
-        newuser.email="User1";
 
-        newuser.save(function(err) {
-            if (err)
-                console.log({message:"User not Added",errmsg:err});
-            else{
-                console.log({ message: 'User Added!',userID:newuser._id});
-                userID=newuser._id.toString();
-                done();
-            }
-        });
-    });
-    before(function(done){
-        var newuser2= new User();
-        newuser2.username="Test";
-        newuser2.email="User2";
-
-        newuser2.save(function(err) {
-            if (err)
-                console.log({message:"User not Added",errmsg:err});
-            else{
-                console.log({ message: 'User Added!',userID:newuser2._id});
-                userID2=newuser2._id.toString();
-                done();
-            }
-        });
-    });
-    before(function(done){
-        var newuser3= new User();
-        newuser3.username="User";
-        newuser3.email="3";
-
-        newuser3.save(function(err) {
-            if (err)
-                console.log({message:"User not Added",errmsg:err});
-            else{
-                console.log({ message: 'User Added!',userID:newuser3._id});
-                userID3=newuser3._id.toString();
-                done();
-            }
-        });
-    });
-    before(function(done){
-
-        var course= new Course();
-        course.coursetype="morse";
-        course.userId=userID;
-        course.score=5;
-        course.coursecontent=[
-            7,
-            13,
-            21
-        ];
-
-        course.save(function(err) {
-            if (err)
-                console.log({message:"Course not Added",errmsg:err});
-            else
-            {
-                console.log({ message: 'Course Added!',courseID:course._id});
-                courseID1=course._id.toString();
-                done();
-            }
-        });
-    });
-    before(function(done){
-
-        var course2= new Course();
-        course2.coursetype="morse";
-        course2.userId=userID;
-        course2.score=7;
-        course2.coursecontent=[
-            22,
-            1,
-            19,
-            23,
-            7
-        ];
-
-        course2.save(function(err) {
-            if (err)
-                console.log({message:"Course not Added",errmsg:err});
-            else
-            {
-                console.log({ message: 'Course Added!',courseID:course2._id});
-                courseID2=course2._id.toString();
-                done();
-            }
-        });
-    });
     describe('GET /users',  () => {
         it('should return all the users in an array', function(done) {
             chai.request(server)
@@ -151,9 +49,9 @@ describe('Users', function (){
                     expect(res.body).to.be.a('array');
                     expect(res.body.length).to.equal(3);
                     let result = _.map(res.body, (user) => {
-                        return { id: user._id, username:user.username,email:user.email}
+                        return { id: user._id, name:user.name}
                     });
-                    expect(result).to.include( {id:userID,username:"Test",email:"User1"} );
+                    expect(result).to.include( {id:userID,name:"Test User1"} );
                     done();
                 });
         });
@@ -166,7 +64,7 @@ describe('Users', function (){
                 .get('/users/'+userID)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
-                    expect(res.body).to.include( {_id:userID,username:"Test",email:"User1"} );
+                    expect(res.body).to.include( {_id:userID,name:"Test User1"} );
                     done();
                 });
         });
@@ -198,7 +96,7 @@ describe('Users', function (){
                     done();
                 });
         });
-        it('should return an error - no courses found', function(done) {
+       it('should return an error - no courses found', function(done) {
 
             chai.request(server)
                 .get('/users/courselist/'+userID2)
@@ -241,7 +139,7 @@ describe('Users', function (){
                     done();
                 });
         });
-        it('should return an error - no courses found', function(done) {
+           it('should return an error - no courses found', function(done) {
 
             chai.request(server)
                 .get('/users/score/'+userID2)
@@ -289,7 +187,7 @@ describe('Users', function (){
                     .send(user)
                     .end((err, res) => {
                         expect(res).to.have.status(404);
-                        expect(res.body).to.have.property('error').equal('No Name or email parameter given, could not add user' );
+                        expect(res.body).to.have.property('error').equal('No Name parameter given, could not add user' );
                         done();
                     });
             });
@@ -297,14 +195,13 @@ describe('Users', function (){
         });
         describe('Standart Flow',  () => {
             it('should add User', function(done) {
-                let user={username:"Added",email:"User"};
+                let user={name:"Added User"};
                 chai.request(server)
                     .post('/users')
                     .send(user)
                     .end((err, res) => {
                         expect(res).to.have.status(200);
                         expect(res.body).to.have.property('message').equal('User Added!' );
-                        userID4=res.body.userID;
                         done();
                     });
             });after(function  (done) {
@@ -315,11 +212,17 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(4);
                         let result = _.map(res.body, (user) => {
-                            return { username: user.username,email: user.email};
+                            return { name: user.name};
                         }  );
-                        expect(result).to.include( { username:"Added",email:"User" } );
+                        expect(result).to.include( { name: 'Added User'  } );
 
-                        User.findByIdAndRemove(userID4, function(err) {
+                        var tempid  = res.body.filter(function(obj){
+                            if (obj.name== 'Added User') {
+                                return obj ;
+                            }
+
+                        } );
+                        User.findByIdAndRemove(tempid, function(err) {
                             if (err)
                                 console.log({message:"User not Deleted",errmsg:err});
                             else
@@ -355,7 +258,7 @@ describe('Users', function (){
                     });
             });
             it('should return Error - new name same as old name', function(done) {
-                let user={username:"User",email:"3"};
+                let user={name:"User 3"};
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -367,8 +270,8 @@ describe('Users', function (){
             });
         });
         describe('Standart Flow',  () => {
-            it('should change username', function(done) {
-                let user={username:"New",email:"UserName"};
+            it('should add User', function(done) {
+                let user={name:"New UserName"};
                 chai.request(server)
                     .put('/users/'+userID3)
                     .send(user)
@@ -385,16 +288,15 @@ describe('Users', function (){
                         expect(res.body).to.be.a('array');
                         expect(res.body.length).to.equal(3);
                         let result = _.map(res.body, (user) => {
-                            return {username: user.username ,email: user.email};
+                            return { name: user.name};
                         }  );
-                        expect(result).to.include( { username:"New",email:"UserName"  } );
+                        expect(result).to.include( { name: 'New UserName'  } );
 
                         User.findById(userID3 ,function(err, user) {
                             if (err)
                                 console.log({message:"User not Found",errmsg:err});
                             else{
-                                user.username="User";
-                                user.email="3";
+                                user.name="User 3";
 
                                 user.save(function (err) {
                                     if(err) {

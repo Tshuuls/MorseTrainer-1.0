@@ -1,8 +1,8 @@
 
 let mongoose = require('mongoose');
+
 let UserSchema = new mongoose.Schema({
-        email:String,
-        firebaseid:String
+        name: String
     },
     { collection: 'users' });
 
