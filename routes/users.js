@@ -51,7 +51,42 @@ router.deleteUser = (req, res) => {
 router.courselist=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
-    User.findById(req.params.id ,function(err, users) {
+    var tempuser;
+    User.find(function(err, users) {
+        if (err)
+            res.send(err);
+        var temp=[];
+        users.filter(function(obj){
+            if( obj.firebaseID.match(req.params.id)){
+                tempuser=obj;
+            }
+
+        } );
+        if(temp.length>0){
+
+            Course.find(function(err, courses) {
+                if (err)
+                    res.send({message:"no Courses found",errmsg:err});
+                else {
+                    var courselist = getCoursesByUserID(courses, tempuser._id);
+                    //console.log(req.params.id);
+                    //console.log(courselist);
+                    if (courselist.length == 0) {
+                        res.send({message: "no Courses found for user: " + req.params.id, errmsg: err});
+                    }
+                    else {
+                        courselist = transformcontentToObjects(courselist);
+                        res.send(JSON.stringify(courselist, null, 5));
+                    }
+
+                }
+            });
+        }
+        else
+            res.send({message:"No users found with: "+req.params.id});
+    });
+
+    /*User.findById(req.params.id ,function(err, users) {
         if (err)
             res.send({message:"User not Found",errmsg:err});
         else{
@@ -76,7 +111,7 @@ router.courselist=(req,res)=>{
             });
         }
 
-    });
+    });*/
 
 
 };
