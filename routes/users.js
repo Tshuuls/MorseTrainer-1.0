@@ -58,6 +58,7 @@ router.courselist=(req,res)=>{
         var temp=[];
         users.filter(function(obj){
             if( obj.firebaseID.match(req.params.id)){
+                res.send({message:obj});
                 tempuser=obj;
             }
 
