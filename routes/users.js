@@ -51,19 +51,18 @@ router.deleteUser = (req, res) => {
 router.courselist=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
-    var tempuser="";
+    var tempuser= null;
     User.find(function(err, users) {
         if (err)
             res.send(err);
         var temp=[];
         users.filter(function(obj){
             if( obj.firebaseID.match(req.params.id)){
-                res.send({message:obj});
                 tempuser=obj;
             }
 
         } );
-        if(temp.length!=""){
+        if(temp.length!=null){
 
             Course.find(function(err, courses) {
                 if (err)
