@@ -71,7 +71,7 @@ router.courselist=(req,res)=>{
                     var courselist = getCoursesByUserID(courses, tempuser._id);
 
                     if (courselist.length == 0) {
-                        res.send({message: "no Courses found for user: " + tempuser._id, courselist: courselist, courses: courses});
+                        res.send({message: "no Courses found for user: " + tempuser._id});
                     }
                     else {
                         courselist = transformcontentToObjects(courselist);
