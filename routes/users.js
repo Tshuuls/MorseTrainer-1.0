@@ -51,7 +51,7 @@ router.deleteUser = (req, res) => {
 router.courselist=(req,res)=>{
 
     res.setHeader('Content-Type', 'application/json');
-    var tempuser;
+    var tempuser="";
     User.find(function(err, users) {
         if (err)
             res.send(err);
@@ -62,7 +62,7 @@ router.courselist=(req,res)=>{
             }
 
         } );
-        if(temp.length>0){
+        if(temp.length!=""){
 
             Course.find(function(err, courses) {
                 if (err)
