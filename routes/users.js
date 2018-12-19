@@ -69,8 +69,7 @@ router.courselist=(req,res)=>{
                     res.send({message:"no Courses found",errmsg:err});
                 else {
                     var courselist = getCoursesByUserID(courses, tempuser._id);
-                    //console.log(req.params.id);
-                    //console.log(courselist);
+
                     if (courselist.length == 0) {
                         res.send({message: "no Courses found for user: " + tempuser._id, courselist: courselist, courses: courses});
                     }
@@ -239,7 +238,7 @@ function getByValue(array, id) {
     return result ? result[0] : null; // or undefined
 }
 function getCoursesByUserID(array, id) {
-    var result  = array.filter(function(obj){return obj.userId == id;} );
+    var result  = array.filter(function(obj){return obj.userId.toString() == id;} );
     return result ? result : null; // or undefined
 }
 function transformcontentToObjects (courses){
