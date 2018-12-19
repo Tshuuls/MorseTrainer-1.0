@@ -72,7 +72,7 @@ router.courselist=(req,res)=>{
                     //console.log(req.params.id);
                     //console.log(courselist);
                     if (courselist.length == 0) {
-                        res.send({message: "no Courses found for user: " + req.params.id, errmsg: err});
+                        res.send({message: "no Courses found for user: " + tempuser._id, errmsg: err});
                     }
                     else {
                         courselist = transformcontentToObjects(courselist);
