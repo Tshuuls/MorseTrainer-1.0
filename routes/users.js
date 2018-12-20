@@ -293,6 +293,7 @@ function getCoursesByUserID(array, id) {
 function transformcontentToObjects (courses){
     let temp=[];
     courses.forEach(function(course){
+        temp=[]
         course.coursecontent.forEach(function(element) {
             temp.push(morsecodes.find(function(item){
                 return element==item.id;
