@@ -40,12 +40,63 @@ router.findAll = (req, res) => {
 router.deleteUser = (req, res) => {
     // Return a JSON representation of our list
     res.setHeader('Content-Type', 'application/json');
-    User.findByIdAndRemove(req.params.id, function(err) {
+    var tempuser= null;
+    User.find(function(err, users) {
         if (err)
-            res.send({message:"User not Found",errmsg:err});
+            res.send(err);
+        var temp=[];
+        users.filter(function(obj){
+            if( obj.firebaseID.match(req.params.id)){
+                tempuser=obj;
+            }
+
+        } );
+        if(temp.length!=null){
+
+            Course.find(function(err, courses) {
+                if (err)
+                    res.send({message:"no Courses found",errmsg:err});
+                else {
+                    var courselist = getCoursesByUserID(courses, tempuser._id);
+
+                    if (courselist.length == 0) {
+                        console.log("no courses to delete for"+tempuser._id)
+                        User.findByIdAndRemove(req.params.id, function(err) {
+                            if (err)
+                                res.send({message:"User not Found",errmsg:err});
+                            else
+                                res.send({message:'User Deleted'});
+                        });
+                    }
+                    else {
+                        courselist.forEach(function(item){
+                            Course.findByIdAndRemove(item._id, function(err) {
+                                if (err)
+                                    console.log("course deleted"+item._id)
+                                else
+                                    console.log("course not deleted"+item._id)
+                            });
+                        })
+
+                        User.findByIdAndRemove(req.params.id, function(err) {
+                            if (err)
+                                res.send({message:"User not Found",errmsg:err});
+                            else
+                                res.send({message:'User Deleted'});
+                        });
+                    }
+
+                }
+            });
+        }
         else
-            res.send({message:'User Deleted'});
-    });
+            res.send({message:"No users found with: "+req.params.id});
+
+
+
+
+
+
 }
 //REFACTORED
 router.courselist=(req,res)=>{
