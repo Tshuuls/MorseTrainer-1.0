@@ -148,7 +148,7 @@ router.addCourse=(req,res)=>{
                 if (err)
                     res.send({message: "Course not Added", errmsg: err});
                 else
-                    res.json({message: 'Course Added!',course:course});
+                    res.json({message: 'Course Added!',course:transformcontentToObjects(course)});
             });
         }
         else
