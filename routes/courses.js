@@ -143,7 +143,6 @@ router.addCourse=(req,res)=>{
             course.userId = tempuser._id;
             course.score = 0;
             course.coursecontent = createCourseContent(req.body.length);
-
             course.save(function (err) {
                 if (err)
                     res.send({message: "Course not Added", errmsg: err});
