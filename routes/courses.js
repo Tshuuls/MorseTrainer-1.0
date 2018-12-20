@@ -130,20 +130,30 @@ router.addCourse=(req,res)=>{
         res.status(404).json({ error: 'Wrong CourseType given, could not add course' });
         throw 'Wrong CourseType given';
     }
-
-    var course= new Course();
-    course.coursetype=req.body.coursetype;
-    course.userId=req.body.userId;
-    course.score=0;
-    course.coursecontent=createCourseContent(req.body.length);
-
-    course.save(function(err) {
+    var tempuser= null;
+    User.find(function(err, users) {
         if (err)
-            res.send({message:"Course not Added",errmsg:err});
-        else
-            res.json({ message: 'Course Added!'});
-    });
+            res.send(err);
+        var temp = [];
+        users.filter(function (obj) {
+            if (obj.firebaseID.match(req.body.userId)) {
+                tempuser = obj;
+            }
 
+        });
+        var course = new Course();
+        course.coursetype = req.body.coursetype;
+        course.userId = tempuser._id;
+        course.score = 0;
+        course.coursecontent = createCourseContent(req.body.length);
+
+        course.save(function (err) {
+            if (err)
+                res.send({message: "Course not Added", errmsg: err});
+            else
+                res.json({message: 'Course Added!'});
+        });
+    });
 };
 
 
