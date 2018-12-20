@@ -61,7 +61,7 @@ router.deleteUser = (req, res) => {
 
                     if (courselist.length == 0) {
                         console.log("no courses to delete for" + tempuser._id)
-                        User.findByIdAndRemove(req.params.id, function (err) {
+                        User.findByIdAndRemove(tempuser._id, function (err) {
                             if (err)
                                 res.send({message: "User not Found", errmsg: err});
                             else
@@ -78,7 +78,7 @@ router.deleteUser = (req, res) => {
                             });
                         })
 
-                        User.findByIdAndRemove(req.params.id, function (err) {
+                        User.findByIdAndRemove(tempuser._id, function (err) {
                             if (err)
                                 res.send({message: "User not Found", errmsg: err});
                             else
