@@ -46,7 +46,7 @@ router.deleteUser = (req, res) => {
             res.send(err);
         var temp = [];
         users.filter(function (obj) {
-            if (obj.firebaseID.match(req.params.id)) {
+            if (obj.firebaseID.match(req.params.id.toString())) {
                 tempuser = obj;
             }
 
