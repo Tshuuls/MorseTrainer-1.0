@@ -110,7 +110,6 @@ router.courselist=(req,res)=>{
             if( obj.firebaseID.match(req.params.id)){
                 tempuser=obj;
             }
-
         } );
         if(temp.length!=null){
 
