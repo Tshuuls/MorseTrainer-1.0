@@ -44,45 +44,45 @@ router.deleteUser = (req, res) => {
     User.find(function(err, users) {
         if (err)
             res.send(err);
-        var temp=[];
-        users.filter(function(obj){
-            if( obj.firebaseID.match(req.params.id)){
-                tempuser=obj;
+        var temp = [];
+        users.filter(function (obj) {
+            if (obj.firebaseID.match(req.params.id)) {
+                tempuser = obj;
             }
 
-        } );
-        if(temp.length!=null){
+        });
+        if (temp.length != null) {
 
-            Course.find(function(err, courses) {
+            Course.find(function (err, courses) {
                 if (err)
-                    res.send({message:"no Courses found",errmsg:err});
+                    res.send({message: "no Courses found", errmsg: err});
                 else {
                     var courselist = getCoursesByUserID(courses, tempuser._id);
 
                     if (courselist.length == 0) {
-                        console.log("no courses to delete for"+tempuser._id)
-                        User.findByIdAndRemove(req.params.id, function(err) {
+                        console.log("no courses to delete for" + tempuser._id)
+                        User.findByIdAndRemove(req.params.id, function (err) {
                             if (err)
-                                res.send({message:"User not Found",errmsg:err});
+                                res.send({message: "User not Found", errmsg: err});
                             else
-                                res.send({message:'User Deleted'});
+                                res.send({message: 'User Deleted'});
                         });
                     }
                     else {
-                        courselist.forEach(function(item){
-                            Course.findByIdAndRemove(item._id, function(err) {
+                        courselist.forEach(function (item) {
+                            Course.findByIdAndRemove(item._id, function (err) {
                                 if (err)
-                                    console.log("course deleted"+item._id)
+                                    console.log("course deleted" + item._id)
                                 else
-                                    console.log("course not deleted"+item._id)
+                                    console.log("course not deleted" + item._id)
                             });
                         })
 
-                        User.findByIdAndRemove(req.params.id, function(err) {
+                        User.findByIdAndRemove(req.params.id, function (err) {
                             if (err)
-                                res.send({message:"User not Found",errmsg:err});
+                                res.send({message: "User not Found", errmsg: err});
                             else
-                                res.send({message:'User Deleted'});
+                                res.send({message: 'User Deleted'});
                         });
                     }
 
@@ -90,10 +90,10 @@ router.deleteUser = (req, res) => {
             });
         }
         else
-            res.send({message:"No users found with: "+req.params.id});
+            res.send({message: "No users found with: " + req.params.id});
 
 
-
+    });
 
 
 
