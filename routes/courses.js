@@ -120,10 +120,6 @@ router.addCourse=(req,res)=>{
         throw 'No userId and/or coursetype and/or length parameter given';
     }
 
-    User.findById(req.body.userId ,function(err, result) {
-        if (err)
-            res.send({error: "User not Found", errmsg: err});
-    });
     exception = req.body.coursetype!="letter"&&req.body.coursetype!="morse";
 
     if (exception) {
@@ -141,18 +137,23 @@ router.addCourse=(req,res)=>{
             }
 
         });
-        var course = new Course();
-        course.coursetype = req.body.coursetype;
-        course.userId = tempuser._id;
-        course.score = 0;
-        course.coursecontent = createCourseContent(req.body.length);
+        if(tempuser!=null){
+            var course = new Course();
+            course.coursetype = req.body.coursetype;
+            course.userId = tempuser._id;
+            course.score = 0;
+            course.coursecontent = createCourseContent(req.body.length);
 
-        course.save(function (err) {
-            if (err)
-                res.send({message: "Course not Added", errmsg: err});
-            else
-                res.json({message: 'Course Added!'});
-        });
+            course.save(function (err) {
+                if (err)
+                    res.send({message: "Course not Added", errmsg: err});
+                else
+                    res.json({message: 'Course Added!'});
+            });
+        }
+        else
+            res.send({message:"No users found with: "+req.params.id});
+
     });
 };
 
