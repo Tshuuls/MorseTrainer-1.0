@@ -16,7 +16,7 @@ const morsecodes = [
     {id: 15, morse: '---', letter:'O'},
     {id: 16, morse: '.--.', letter:'P'},
     {id: 17, morse: '--.-', letter:'Q'},
-    {id: 18, morse: '-.-', letter:'R'},
+    {id: 18, morse: '.-.', letter:'R'},
     {id: 19, morse: '...', letter:'S'},
     {id: 20, morse: '-', letter:'T'},
     {id: 21, morse: '..-', letter:'U'},
