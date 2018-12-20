@@ -38,8 +38,7 @@ app.get('/courses/:id', courses.findOne);
 app.get('/courses/transformation/:id', courses.transformOne);
 
 app.post('/courses', courses.addCourse);
-//{"coursetype":"morse","userId":"5bcc64f129ebe7f8da21df18","length":3}  Percival
-//{"coursetype":"letter","userId":"5bcc64fd29ebe7f8da21df19","length":7}  Matt
+
 
 app.put('/courses/:id',courses.updateScore);
 
