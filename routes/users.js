@@ -91,8 +91,7 @@ router.deleteUser = (req, res) => {
         }
         else
             res.send({message: "No users found with: " + req.params.id});
-
-
+        
     });
 
 
